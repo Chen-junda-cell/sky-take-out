@@ -1,7 +1,10 @@
 package com.sky.service.impl;
 
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
@@ -9,15 +12,58 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.service.EmployeeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+
+    /**
+     * 新增员工
+     * @param employeeDTO
+     */
+    @Override
+    public void save(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+
+        //通过DTO部分导入员工类的属性
+        BeanUtils.copyProperties(employeeDTO, employee);
+        //剩下的属性要手动配置
+
+        //配置status属性
+        employee.setStatus(StatusConstant.ENABLE);
+
+        //DigestUtils.md5DigestAsHex(...)
+        //这是 Spring 框架提供的工具类，作用是：
+        //用 MD5 算法加密字节数组
+        //并返回一个 32位的十六进制字符串
+        //比如：
+        //"123456" 加密后是：e10adc3949ba59abbe56e057f20f883e
+        //
+
+
+        //employee.setPassword(...)
+        //把加密后的字符串设置为员工对象的密码。
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+
+        //设置当前记录的创建时间和修改时间
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        //设置当前记录创建人id和修改人id
+        employee.setCreateUser(BaseContext.getCurrentId());//目前写个假数据，后期修改
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+               employeeMapper.insert(employee);//后续步骤定义
+    }
 
     /**
      * 员工登录
