@@ -4,4 +4,8 @@
 <mapper namespace="com.sky.mapper.SetmealMapper">
 
 
-        </mapper>
+    <insert id="insert" >
+        insert into setmeal(category_id,description,id,image,name,price,status)
+        values (#{categoryId},#{description},#{id},#{image},#{name},#{price},#{status})
+    </insert>
+</mapper>
