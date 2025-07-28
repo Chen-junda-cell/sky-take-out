@@ -15,4 +15,16 @@ public interface SetmealDishMapper {
      */
     //select setmeal_id from setmeal_dish where dish_id in (1,2,3,4)
     List<Long> getSetmealIdsByDishIds(List<Long> ids);
+
+    /**
+     * 依次保存菜品和套餐的关系
+     * @param setmealDishes
+     */
+    void insertBatch(List<SetmealDish> setmealDishes);
+
+    /**
+     * 根据套餐id删除表中菜品
+     * @param id
+     */
+    void deleteById(Long id);
 }

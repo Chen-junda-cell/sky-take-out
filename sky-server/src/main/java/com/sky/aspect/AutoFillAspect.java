@@ -40,6 +40,7 @@ public class AutoFillAspect {
         //可先进行调试，是否能进入该方法 提前在mapper方法添加AutoFill注解
         log.info("开始进行公共字段自动填充...");
 
+
         //获取当前方法的数据库操作类型
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         AutoFill annotation = signature.getMethod().getAnnotation(AutoFill.class);
@@ -54,12 +55,14 @@ public class AutoFillAspect {
         LocalDateTime now = LocalDateTime.now();
         Long currentID = BaseContext.getCurrentId();
         //根据不同的操作更新不同的字段
+
         if(operationType == OperationType.INSERT){
             try {
                 Method setCreatTime = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
                 Method setCreatUser = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
                 Method setUpdateTime = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
+
 
                 setCreatTime.invoke(entity,now);
                 setCreatUser.invoke(entity,currentID);
