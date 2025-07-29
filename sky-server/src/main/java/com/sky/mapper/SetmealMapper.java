@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.SetmealVO;
@@ -17,6 +18,7 @@ public interface SetmealMapper {
 
     /**
      * 根据分类id查询套餐的数量
+     *
      * @param id
      * @return
      */
@@ -26,6 +28,7 @@ public interface SetmealMapper {
 
     /**
      * 新增套餐
+     *
      * @param setmeal
      */
     @AutoFill(OperationType.INSERT)
@@ -33,6 +36,7 @@ public interface SetmealMapper {
 
     /**
      * 套餐分页查询
+     *
      * @param setmealPageQueryDTO
      * @return
      */
@@ -40,8 +44,36 @@ public interface SetmealMapper {
 
     /**
      * 根据套餐ID删除套餐
+     *
      * @param id
      */
     @Delete("delete from setmeal where id=#{id}")
     void deleteBySetmealId(Long id);
+
+    /**
+     * 修改套餐
+     *
+     * @param setmeal
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
+
+    /**
+     * 根据套餐id查询套餐信息
+     *
+     * @param id
+     * @return
+     */
+
+    @Select("select *from setmeal where id =#{id}")
+    Setmeal getById(Long id);
+
+    /**
+     * 根据套餐ID查询菜品
+     * @param id
+     * @return
+     */
+
+    @Select("select a.* from dish a left join setmeal_dish b on a.id = b.dish_id where b.setmeal_id = #{setmealId}")
+    List<Dish> getBySetmealId(Long id);
 }
